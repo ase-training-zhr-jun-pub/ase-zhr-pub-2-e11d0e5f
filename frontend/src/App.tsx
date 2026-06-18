@@ -1,28 +1,32 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+
+import { Layout } from "@/components/layout"
+import { StartPage } from "@/pages/StartPage"
+import { RoomListPage } from "@/pages/RoomListPage"
+import { RoomDetailPage } from "@/pages/RoomDetailPage"
+import { BookingDetailsPage } from "@/pages/BookingDetailsPage"
+import { BookingConfirmationPage } from "@/pages/BookingConfirmationPage"
+import { MyBookingsPage } from "@/pages/MyBookingsPage"
+
+const router = createBrowserRouter(
+  [
+    {
+      element: <Layout />,
+      children: [
+        { path: "/", element: <StartPage /> },
+        { path: "/raeume", element: <RoomListPage /> },
+        { path: "/raeume/:id", element: <RoomDetailPage /> },
+        { path: "/buchen/:id/details", element: <BookingDetailsPage /> },
+        { path: "/buchungsbestaetigung", element: <BookingConfirmationPage /> },
+        { path: "/meine-buchungen", element: <MyBookingsPage /> },
+      ],
+    },
+  ],
+  { basename: import.meta.env.BASE_URL.replace(/\/$/, "") },
+)
 
 function App() {
-  return (
-    <div className="flex min-h-svh items-center justify-center bg-background p-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Calvin</CardTitle>
-          <CardDescription>INNOQ Raumbuchungssystem</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <p className="text-sm text-muted-foreground">
-            Du kannst jetzt mit dem Aufbau der UI
-            beginnen.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
-  )
+  return <RouterProvider router={router} />
 }
 
 export default App

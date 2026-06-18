@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -9,7 +10,7 @@ import { RAEUME, AKTUELLER_NUTZER, type Buchung, type Standort } from "@/lib/moc
 import { buchungenAbrufen } from "@/lib/api"
 
 // Referenz-"heute" (gemockt), passend zu den Mock-Buchungen.
-const HEUTE = "2026-06-17"
+const HEUTE = "2026-06-18"
 
 const WOCHENTAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 const MONATE = [
@@ -27,7 +28,15 @@ function isoZuDatum(iso: string): { jahr: number; monat: number } {
   return { jahr, monat: monat - 1 }
 }
 
+function datumFormatieren(iso: string): string {
+  const [jahr, monat, tag] = iso.split("-").map(Number)
+  const d = new Date(jahr, monat - 1, tag)
+  const wt = WOCHENTAGE[(d.getDay() + 6) % 7]
+  return `${wt}, ${tag}. ${MONATE[monat - 1].substring(0, 3)}. ${jahr}`
+}
+
 export function MyBookingsPage() {
+  const navigate = useNavigate()
   const heute = isoZuDatum(HEUTE)
   const [ansicht, setAnsicht] = useState(heute)
   const [meineBuchungen, setMeineBuchungen] = useState<Buchung[]>([])
@@ -226,6 +235,53 @@ export function MyBookingsPage() {
           )}
         </div>
       )}
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight">Alle Buchungen</h2>
+        {meineBuchungen.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              Sie haben noch keine Buchungen.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            {[...meineBuchungen]
+              .sort((a, b) =>
+                (a.datum + a.von).localeCompare(b.datum + b.von),
+              )
+              .map((b) => {
+                const vergangen = b.datum < HEUTE
+                return (
+                  <Card
+                    key={b.id}
+                    className={cn(
+                      "cursor-pointer transition-colors hover:bg-muted/50",
+                      vergangen && "opacity-60",
+                    )}
+                    onClick={() =>
+                      navigate(
+                        `/buchungsdetails/${b.buchungsnummer}?datum=${b.datum}&von=${b.von}&bis=${b.bis}&raumName=${encodeURIComponent(b.raumName)}&standort=${encodeURIComponent(b.standort)}&titel=${encodeURIComponent(b.titel)}`,
+                      )
+                    }
+                  >
+                    <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-1 py-3">
+                      <span className="min-w-40 text-sm font-medium">
+                        {datumFormatieren(b.datum)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {b.von}–{b.bis} Uhr
+                      </span>
+                      <span className="text-sm font-medium">{b.raumName}</span>
+                      <span className="text-sm text-muted-foreground">{b.standort}</span>
+                      <span className="text-sm">{b.titel}</span>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+          </div>
+        )}
+      </section>
     </div>
   )
 }
