@@ -22,4 +22,11 @@ public class InMemoryBuchungRepository implements BuchungRepository {
     public List<Buchung> alleAbrufen() {
         return List.copyOf(buchungen);
     }
+
+    @Override
+    public List<Buchung> findeNachRaumUndDatum(String raumId, String datum) {
+        return buchungen.stream()
+                .filter(b -> b.raumId().equals(raumId) && b.datum().equals(datum))
+                .toList();
+    }
 }
