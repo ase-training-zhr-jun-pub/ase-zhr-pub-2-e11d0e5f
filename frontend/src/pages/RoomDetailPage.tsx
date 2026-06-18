@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { ArrowLeft, Users, CalendarDays, Clock, CheckCircle2 } from "lucide-react"
 
@@ -8,6 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { LinkButton } from "@/components/link-button"
 import { RAEUME, istVerfuegbar } from "@/lib/mock-data"
 import { leseSuchKriterien, formatDatum } from "@/lib/such-kriterien"
+import { verfuegbarkeitPruefen } from "@/lib/api"
 
 // Tagesfenster der Timeline: 08:00–18:00 Uhr.
 const TAG_START = 8 * 60
@@ -32,6 +34,19 @@ export function RoomDetailPage() {
 
   const raum = RAEUME.find((r) => r.id === id)
 
+  const mockFrei = raum ? istVerfuegbar(raum, kriterien.von, kriterien.bis) : false
+  const [frei, setFrei] = useState<boolean>(mockFrei)
+  const [laedt, setLaedt] = useState<boolean>(true)
+
+  useEffect(() => {
+    if (!raum) return
+    setLaedt(true)
+    verfuegbarkeitPruefen(raum.id, kriterien.datum, kriterien.von, kriterien.bis)
+      .then((result) => setFrei(result.verfuegbar))
+      .catch(() => setFrei(mockFrei))
+      .finally(() => setLaedt(false))
+  }, [raum?.id, kriterien.datum, kriterien.von, kriterien.bis])
+
   if (!raum) {
     return (
       <div className="space-y-4">
@@ -48,8 +63,6 @@ export function RoomDetailPage() {
     )
   }
 
-  const frei = istVerfuegbar(raum, kriterien.von, kriterien.bis)
-
   function bestaetigen() {
     navigate(`/buchen/${id}/details?${params.toString()}`)
   }
@@ -65,9 +78,13 @@ export function RoomDetailPage() {
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <CardTitle className="text-2xl">{raum.name}</CardTitle>
-            <Badge variant={frei ? "brand" : "destructive"}>
-              {frei ? "Verfügbar" : "Belegt"}
-            </Badge>
+            {laedt ? (
+              <Badge variant="secondary">Wird geprüft…</Badge>
+            ) : (
+              <Badge variant={frei ? "brand" : "destructive"}>
+                {frei ? "Verfügbar" : "Belegt"}
+              </Badge>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">{raum.standort}</p>
         </CardHeader>
