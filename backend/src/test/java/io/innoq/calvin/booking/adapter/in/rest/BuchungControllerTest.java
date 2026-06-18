@@ -57,7 +57,7 @@ class BuchungControllerTest {
     @Test
     void buchungenAbrufen_gibtListeZurueck() throws Exception {
         given(buchungenAbrufenUseCase.alleAbrufen()).willReturn(List.of(
-                new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger")
+                new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger", null)
         ));
 
         mockMvc.perform(get("/api/buchungen")

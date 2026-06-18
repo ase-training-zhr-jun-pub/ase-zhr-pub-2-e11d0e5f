@@ -12,6 +12,8 @@ export function BookingConfirmationPage() {
   const kriterien = leseSuchKriterien(params)
   const raumId = params.get("raum") ?? ""
   const buchungsnummer = params.get("buchungsnummer") ?? ""
+  const titel = params.get("titel") ?? ""
+  const notiz = params.get("notiz")
   const raum = RAEUME.find((r) => r.id === raumId)
 
   return (
@@ -29,11 +31,14 @@ export function BookingConfirmationPage() {
       <Card className="w-full max-w-md">
         <CardContent className="space-y-4 pt-6">
           <div className="space-y-1">
-            <p className="text-lg font-medium">{raum?.name ?? "Raum"}</p>
+            <p className="text-lg font-medium">{titel || raum?.name ?? "Raum"}</p>
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <MapPin className="size-4" />
-              {kriterien.standort}
+              {raum?.name ?? raumId} · {kriterien.standort}
             </p>
+            {notiz && (
+              <p className="text-sm text-muted-foreground">{notiz}</p>
+            )}
           </div>
 
           <Separator />

@@ -7,5 +7,6 @@ public record Buchung(
         String von,
         String bis,
         String titel,
-        String nutzerId) {
+        String nutzerId,
+        String notiz) {
 }

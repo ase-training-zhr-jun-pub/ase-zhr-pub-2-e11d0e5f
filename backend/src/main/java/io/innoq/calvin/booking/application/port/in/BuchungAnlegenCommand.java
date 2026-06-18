@@ -6,5 +6,6 @@ public record BuchungAnlegenCommand(
         String von,
         String bis,
         String titel,
-        String nutzerId) {
+        String nutzerId,
+        String notiz) {
 }

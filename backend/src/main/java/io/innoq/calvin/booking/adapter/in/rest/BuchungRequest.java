@@ -5,5 +5,6 @@ public record BuchungRequest(
         String datum,
         String von,
         String bis,
-        String titel) {
+        String titel,
+        String notiz) {
 }

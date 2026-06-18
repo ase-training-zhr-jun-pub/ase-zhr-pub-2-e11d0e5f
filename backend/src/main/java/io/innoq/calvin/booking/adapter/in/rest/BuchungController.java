@@ -47,7 +47,7 @@ public class BuchungController {
         String nutzerId = extractNutzerId(authHeader);
         var command = new BuchungAnlegenCommand(
                 request.raumId(), request.datum(), request.von(),
-                request.bis(), request.titel(), nutzerId);
+                request.bis(), request.titel(), nutzerId, request.notiz());
 
         return new BuchungResponse(buchungAnlegenUseCase.buchen(command));
     }
