@@ -45,6 +45,7 @@ htmlcov/
 # React / Frontend
 .next/
 out/
+!backend/**/out/
 .turbo/
 *.tsbuildinfo
 .eslintcache
