@@ -18,6 +18,10 @@ public class InMemoryBuchungRepository implements BuchungRepository {
         buchungen.add(buchung);
     }
 
+    public List<Buchung> alleAbrufen() {
+        return List.copyOf(buchungen);
+    }
+
     @Override
     public List<Buchung> alleAbrufen() {
         return List.copyOf(buchungen);

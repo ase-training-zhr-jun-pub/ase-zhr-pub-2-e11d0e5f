@@ -9,11 +9,12 @@ public record BuchungListeEintrag(
         String von,
         String bis,
         String titel,
-        String nutzerId) {
+        String nutzerId,
+        String notiz) {
 
     static BuchungListeEintrag from(Buchung b) {
         return new BuchungListeEintrag(
                 b.buchungsnummer(), b.raumId(), b.datum(),
-                b.von(), b.bis(), b.titel(), b.nutzerId());
+                b.von(), b.bis(), b.titel(), b.nutzerId(), b.notiz());
     }
 }

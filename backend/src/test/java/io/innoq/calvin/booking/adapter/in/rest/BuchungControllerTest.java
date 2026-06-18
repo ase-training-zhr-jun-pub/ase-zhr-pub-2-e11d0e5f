@@ -197,6 +197,19 @@ class BuchungControllerTest {
     }
 
     @Test
+    void buchungenAbrufen_gibtNotizZurueck() throws Exception {
+        given(buchungenAbrufenUseCase.abrufenFuerNutzer("alex.berger")).willReturn(List.of(
+                new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger", "Bitte Laptop mitbringen")
+        ));
+
+        mockMvc.perform(get("/api/buchungen")
+                        .header("Authorization", basicAuth("alex.berger")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].buchungsnummer").value("BUC-001"))
+                .andExpect(jsonPath("$[0].notiz").value("Bitte Laptop mitbringen"));
+    }
+
+    @Test
     void buchungAnlegen_mitLeeremTitel_gibt400() throws Exception {
         mockMvc.perform(post("/api/buchungen")
                         .contentType(APPLICATION_JSON)
