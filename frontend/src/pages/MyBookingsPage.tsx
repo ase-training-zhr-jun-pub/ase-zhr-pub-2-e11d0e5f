@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -8,8 +9,7 @@ import { cn } from "@/lib/utils"
 import { RAEUME, AKTUELLER_NUTZER, type Buchung, type Standort } from "@/lib/mock-data"
 import { buchungenAbrufen } from "@/lib/api"
 
-// Referenz-"heute" (gemockt), passend zu den Mock-Buchungen.
-const HEUTE = "2026-06-17"
+const HEUTE = new Date().toISOString().split("T")[0]
 
 const WOCHENTAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 const MONATE = [
@@ -27,7 +27,15 @@ function isoZuDatum(iso: string): { jahr: number; monat: number } {
   return { jahr, monat: monat - 1 }
 }
 
+function datumFormatieren(iso: string): string {
+  const [jahr, monat, tag] = iso.split("-").map(Number)
+  const d = new Date(jahr, monat - 1, tag)
+  const wt = WOCHENTAGE[(d.getDay() + 6) % 7]
+  return `${wt}, ${tag}. ${MONATE[monat - 1].substring(0, 3)}. ${jahr}`
+}
+
 export function MyBookingsPage() {
+  const navigate = useNavigate()
   const heute = isoZuDatum(HEUTE)
   const [ansicht, setAnsicht] = useState(heute)
   const [meineBuchungen, setMeineBuchungen] = useState<Buchung[]>([])
@@ -143,7 +151,7 @@ export function MyBookingsPage() {
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
             <p className="text-muted-foreground">
-              Sie haben noch keine Konferenzräume gebucht.
+              Sie haben noch keine Raumbuchungen.
             </p>
             <LinkButton to="/">Raum buchen</LinkButton>
           </CardContent>
@@ -226,6 +234,62 @@ export function MyBookingsPage() {
           )}
         </div>
       )}
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight">Alle Buchungen</h2>
+        {meineBuchungen.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              Sie haben noch keine Raumbuchungen.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            {[...meineBuchungen]
+              .sort((a, b) =>
+                new Date(`${a.datum}T${a.von}`).getTime() - new Date(`${b.datum}T${b.von}`).getTime(),
+              )
+              .map((b) => {
+                const vergangen = b.datum < HEUTE
+                return (
+                  <Card
+                    key={b.id}
+                    title={`${b.titel} · ${b.raumName} · ${b.standort} · ${b.von}–${b.bis} Uhr`}
+                    className={cn(
+                      "cursor-pointer transition-colors hover:bg-muted/50",
+                      vergangen && "opacity-60",
+                    )}
+                    onClick={() =>
+                      navigate(`/buchungsdetails/${b.buchungsnummer}`, {
+                        state: {
+                          buchungsnummer: b.buchungsnummer,
+                          raumName: b.raumName,
+                          standort: b.standort,
+                          datum: b.datum,
+                          von: b.von,
+                          bis: b.bis,
+                          titel: b.titel,
+                        },
+                      })
+                    }
+                  >
+                    <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-1 py-3">
+                      <span className="min-w-40 text-sm font-medium">
+                        {datumFormatieren(b.datum)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {b.von}–{b.bis} Uhr
+                      </span>
+                      <span className="text-sm font-medium">{b.raumName}</span>
+                      <span className="text-sm text-muted-foreground">{b.standort}</span>
+                      <span className="text-sm">{b.titel}</span>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+          </div>
+        )}
+      </section>
     </div>
   )
 }
