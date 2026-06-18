@@ -23,7 +23,7 @@ class VerfuegbarkeitsServiceTest {
     VerfuegbarkeitsService verfuegbarkeitsService;
 
     private static Buchung buchung(String von, String bis) {
-        return new Buchung("BUC-001", "koeln-1-1", "2026-06-17", von, bis, "Titel", "user");
+        return new Buchung("BUC-001", "koeln-1-1", "2026-06-17", von, bis, "Titel", "user", null);
     }
 
     @Test

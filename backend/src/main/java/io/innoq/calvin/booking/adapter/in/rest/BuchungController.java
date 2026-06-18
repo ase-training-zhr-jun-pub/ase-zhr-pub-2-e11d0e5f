@@ -5,6 +5,7 @@ import io.innoq.calvin.booking.application.port.in.BuchungAnlegenUseCase;
 import io.innoq.calvin.booking.application.port.in.BuchungenAbrufenUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -47,9 +48,15 @@ public class BuchungController {
         String nutzerId = extractNutzerId(authHeader);
         var command = new BuchungAnlegenCommand(
                 request.raumId(), request.datum(), request.von(),
-                request.bis(), request.titel(), nutzerId);
+                request.bis(), request.titel(), request.notiz(), nutzerId);
 
         return new BuchungResponse(buchungAnlegenUseCase.buchen(command));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String ungueltigeBuchung(IllegalArgumentException e) {
+        return e.getMessage();
     }
 
     private String extractNutzerId(String authHeader) {

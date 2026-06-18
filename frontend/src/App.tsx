@@ -27,6 +27,8 @@ const router = createBrowserRouter(
   { basename: import.meta.env.BASE_URL.replace(/\/$/, "") },
 )
 
-export default function App() {
+function App() {
   return <RouterProvider router={router} />
 }
+
+export default App
