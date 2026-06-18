@@ -34,12 +34,12 @@ export function RoomDetailPage() {
 
   const raum = RAEUME.find((r) => r.id === id)
 
-  const mockFrei = raum ? istVerfuegbar(raum, kriterien.von, kriterien.bis) : false
-  const [frei, setFrei] = useState<boolean>(mockFrei)
+  const [frei, setFrei] = useState<boolean>(false)
   const [laedt, setLaedt] = useState<boolean>(true)
 
   useEffect(() => {
     if (!raum) return
+    const mockFrei = istVerfuegbar(raum, kriterien.von, kriterien.bis)
     setLaedt(true)
     verfuegbarkeitPruefen(raum.id, kriterien.datum, kriterien.von, kriterien.bis)
       .then((result) => setFrei(result.verfuegbar))
