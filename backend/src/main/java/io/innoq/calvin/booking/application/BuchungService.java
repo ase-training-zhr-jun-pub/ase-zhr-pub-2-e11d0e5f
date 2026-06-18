@@ -35,7 +35,7 @@ public class BuchungService implements BuchungAnlegenUseCase, BuchungenAbrufenUs
     }
 
     @Override
-    public List<Buchung> alleAbrufen(String nutzerId) {
+    public List<Buchung> abrufenFuerNutzer(String nutzerId) {
         return buchungRepository.abrufenFuerNutzer(nutzerId).stream()
                 .sorted(Comparator.comparing(b -> b.datum() + b.von()))
                 .toList();

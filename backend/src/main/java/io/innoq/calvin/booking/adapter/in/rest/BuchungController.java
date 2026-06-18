@@ -33,7 +33,7 @@ public class BuchungController {
     public List<BuchungListeEintrag> buchungenAbrufen(
             @RequestHeader("Authorization") String authHeader) {
         String nutzerId = extractNutzerId(authHeader);
-        return buchungenAbrufenUseCase.alleAbrufen(nutzerId).stream()
+        return buchungenAbrufenUseCase.abrufenFuerNutzer(nutzerId).stream()
                 .map(BuchungListeEintrag::from)
                 .toList();
     }

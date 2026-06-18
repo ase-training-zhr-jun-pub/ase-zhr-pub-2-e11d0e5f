@@ -260,9 +260,17 @@ export function MyBookingsPage() {
                       vergangen && "opacity-60",
                     )}
                     onClick={() =>
-                      navigate(
-                        `/buchungsdetails/${b.buchungsnummer}?datum=${b.datum}&von=${b.von}&bis=${b.bis}&raumName=${encodeURIComponent(b.raumName)}&standort=${encodeURIComponent(b.standort)}&titel=${encodeURIComponent(b.titel)}`,
-                      )
+                      navigate(`/buchungsdetails/${b.buchungsnummer}`, {
+                        state: {
+                          buchungsnummer: b.buchungsnummer,
+                          raumName: b.raumName,
+                          standort: b.standort,
+                          datum: b.datum,
+                          von: b.von,
+                          bis: b.bis,
+                          titel: b.titel,
+                        },
+                      })
                     }
                   >
                     <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-1 py-3">

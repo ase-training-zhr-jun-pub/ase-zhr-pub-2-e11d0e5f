@@ -56,7 +56,7 @@ class BuchungControllerTest {
 
     @Test
     void buchungenAbrufen_gibtListeZurueck() throws Exception {
-        given(buchungenAbrufenUseCase.alleAbrufen("alex.berger")).willReturn(List.of(
+        given(buchungenAbrufenUseCase.abrufenFuerNutzer("alex.berger")).willReturn(List.of(
                 new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger")
         ));
 
@@ -69,10 +69,10 @@ class BuchungControllerTest {
 
     @Test
     void buchungenAbrufen_gibtNurBuchungenDesNutzersZurueck() throws Exception {
-        given(buchungenAbrufenUseCase.alleAbrufen("alex.berger")).willReturn(List.of(
+        given(buchungenAbrufenUseCase.abrufenFuerNutzer("alex.berger")).willReturn(List.of(
                 new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger")
         ));
-        given(buchungenAbrufenUseCase.alleAbrufen("andere.person")).willReturn(List.of());
+        given(buchungenAbrufenUseCase.abrufenFuerNutzer("andere.person")).willReturn(List.of());
 
         mockMvc.perform(get("/api/buchungen")
                         .header("Authorization", basicAuth("andere.person")))
