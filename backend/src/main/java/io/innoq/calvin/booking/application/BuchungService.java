@@ -34,7 +34,7 @@ public class BuchungService implements BuchungAnlegenUseCase, BuchungenAbrufenUs
     }
 
     @Override
-    public List<Buchung> alleAbrufen() {
-        return buchungRepository.alleAbrufen();
+    public List<Buchung> alleAbrufen(String nutzerId) {
+        return buchungRepository.abrufenFuerNutzer(nutzerId);
     }
 }

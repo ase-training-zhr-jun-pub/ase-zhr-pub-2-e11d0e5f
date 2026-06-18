@@ -9,4 +9,6 @@ public interface BuchungRepository {
     void speichern(Buchung buchung);
 
     List<Buchung> alleAbrufen();
+
+    List<Buchung> abrufenFuerNutzer(String nutzerId);
 }
