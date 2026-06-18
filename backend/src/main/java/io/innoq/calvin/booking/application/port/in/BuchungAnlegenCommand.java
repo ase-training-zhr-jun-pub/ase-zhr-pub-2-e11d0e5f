@@ -1,5 +1,7 @@
 package io.innoq.calvin.booking.application.port.in;
 
+import org.springframework.lang.Nullable;
+
 public record BuchungAnlegenCommand(
         String raumId,
         String datum,
@@ -7,5 +9,5 @@ public record BuchungAnlegenCommand(
         String bis,
         String titel,
         String nutzerId,
-        String notiz) {
+        @Nullable String notiz) {
 }
