@@ -29,7 +29,8 @@ public class BuchungService implements BuchungAnlegenUseCase, BuchungenAbrufenUs
                 command.von(),
                 command.bis(),
                 command.titel(),
-                command.nutzerId()));
+                command.nutzerId(),
+                command.notiz()));
         return buchungsnummer;
     }
 
