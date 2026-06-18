@@ -59,3 +59,15 @@ export async function buchungenAbrufen(nutzerId: string): Promise<BackendBuchung
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.json()
 }
+
+export async function verfuegbarkeitPruefen(
+  raumId: string,
+  datum: string,
+  von: string,
+  bis: string,
+): Promise<{ verfuegbar: boolean }> {
+  const params = new URLSearchParams({ datum, von, bis })
+  const res = await fetch(`${API_BASE}api/raeume/${raumId}/verfuegbarkeit?${params}`)
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.json()
+}

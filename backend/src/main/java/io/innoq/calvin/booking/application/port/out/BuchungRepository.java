@@ -11,4 +11,6 @@ public interface BuchungRepository {
     List<Buchung> alleAbrufen();
 
     List<Buchung> abrufenFuerNutzer(String nutzerId);
+
+    List<Buchung> findeNachRaumUndDatum(String raumId, String datum);
 }
