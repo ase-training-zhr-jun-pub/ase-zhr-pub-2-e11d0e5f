@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Base64;
 import java.util.List;
@@ -29,11 +30,11 @@ public class BuchungController {
     }
 
     @GetMapping
-    public List<BuchungListeEintrag> buchungenAbrufen() {
+    public List<BuchungListeEintrag> buchungenAbrufen(
+            @RequestHeader("Authorization") String authHeader) {
+        extractNutzerId(authHeader);
         return buchungenAbrufenUseCase.alleAbrufen().stream()
-                .map(b -> new BuchungListeEintrag(
-                        b.buchungsnummer(), b.raumId(), b.datum(),
-                        b.von(), b.bis(), b.titel(), b.nutzerId()))
+                .map(BuchungListeEintrag::from)
                 .toList();
     }
 
@@ -53,8 +54,12 @@ public class BuchungController {
 
     private String extractNutzerId(String authHeader) {
         // Basic-Auth ohne Passwort: "Basic <base64(nutzerId:)>"
-        String decoded = new String(Base64.getDecoder().decode(
-                authHeader.replace("Basic ", "")));
-        return decoded.replace(":", "");
+        try {
+            String decoded = new String(Base64.getDecoder().decode(
+                    authHeader.replace("Basic ", "")));
+            return decoded.split(":")[0];
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ungültiger Authorization-Header");
+        }
     }
 }

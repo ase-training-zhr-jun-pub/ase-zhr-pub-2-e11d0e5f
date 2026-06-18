@@ -2,6 +2,7 @@ package io.innoq.calvin.booking.adapter.in.rest;
 
 import io.innoq.calvin.booking.application.port.in.BuchungAnlegenCommand;
 import io.innoq.calvin.booking.application.port.in.BuchungAnlegenUseCase;
+import io.innoq.calvin.booking.application.port.in.BuchungenAbrufenUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -25,6 +26,9 @@ class BuchungControllerTest {
 
     @MockitoBean
     BuchungAnlegenUseCase buchungAnlegenUseCase;
+
+    @MockitoBean
+    BuchungenAbrufenUseCase buchungenAbrufenUseCase;
 
     @Test
     void buchungAnlegen_gibtBuchungsnummerZurueck() throws Exception {
