@@ -7,6 +7,7 @@ import io.innoq.calvin.booking.application.port.out.BuchungRepository;
 import io.innoq.calvin.booking.domain.model.Buchung;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +36,8 @@ public class BuchungService implements BuchungAnlegenUseCase, BuchungenAbrufenUs
 
     @Override
     public List<Buchung> alleAbrufen(String nutzerId) {
-        return buchungRepository.abrufenFuerNutzer(nutzerId);
+        return buchungRepository.abrufenFuerNutzer(nutzerId).stream()
+                .sorted(Comparator.comparing(b -> b.datum() + b.von()))
+                .toList();
     }
 }
