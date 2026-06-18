@@ -19,8 +19,10 @@ public class InMemoryBuchungRepository implements BuchungRepository {
     }
 
     @Override
-    public List<Buchung> alleAbrufen() {
-        return List.copyOf(buchungen);
+    public List<Buchung> abrufenFuerNutzer(String nutzerId) {
+        return buchungen.stream()
+                .filter(b -> nutzerId.equals(b.nutzerId()))
+                .toList();
     }
 
     @Override
