@@ -24,6 +24,7 @@ export interface BuchungAnlegenRequest {
   von: string
   bis: string
   titel: string
+  notiz?: string
 }
 
 export interface BackendBuchung {

@@ -19,6 +19,7 @@ export function BookingDetailsPage() {
   const kriterien = leseSuchKriterien(params)
 
   const [titel, setTitel] = useState("")
+  const [notiz, setNotiz] = useState("")
   const [laeuft, setLaeuft] = useState(false)
   const [fehler, setFehler] = useState<string | null>(null)
 
@@ -51,15 +52,22 @@ export function BookingDetailsPage() {
           von: kriterien.von,
           bis: kriterien.bis,
           titel,
+          notiz: notiz || undefined,
         },
         AKTUELLER_NUTZER.nutzerId,
       )
-      const buchungsParams = new URLSearchParams({
-        raum: raum!.id,
-        buchungsnummer: result.buchungsnummer,
-        ...kriterien,
+      navigate("/buchungsbestaetigung", {
+        state: {
+          buchungsnummer: result.buchungsnummer,
+          raumId: raum!.id,
+          titel,
+          notiz: notiz || undefined,
+          datum: kriterien.datum,
+          von: kriterien.von,
+          bis: kriterien.bis,
+          standort: kriterien.standort,
+        },
       })
-      navigate(`/buchungsbestaetigung?${buchungsParams.toString()}`)
     } catch {
       setFehler("Buchung konnte nicht gespeichert werden.")
     } finally {
@@ -120,6 +128,8 @@ export function BookingDetailsPage() {
                 id="notiz"
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 placeholder="Zusätzliche Hinweise zur Buchung …"
+                value={notiz}
+                onChange={(e) => setNotiz(e.target.value)}
               />
             </div>
           </div>
@@ -132,9 +142,9 @@ export function BookingDetailsPage() {
             size="lg"
             className="w-full sm:w-auto"
             onClick={weiter}
-            disabled={laeuft}
+            disabled={laeuft || !titel}
           >
-            {laeuft ? "Wird gespeichert …" : "Weiter zur Buchung"}
+            {laeuft ? "Wird gespeichert …" : "Buchung absenden"}
           </Button>
         </CardContent>
       </Card>
