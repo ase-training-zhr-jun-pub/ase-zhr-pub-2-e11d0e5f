@@ -1,5 +1,7 @@
 package io.innoq.calvin.booking.domain.model;
 
+import org.springframework.lang.Nullable;
+
 public record Buchung(
         String buchungsnummer,
         String raumId,
@@ -8,5 +10,5 @@ public record Buchung(
         String bis,
         String titel,
         String nutzerId,
-        String notiz) {
+        @Nullable String notiz) {
 }

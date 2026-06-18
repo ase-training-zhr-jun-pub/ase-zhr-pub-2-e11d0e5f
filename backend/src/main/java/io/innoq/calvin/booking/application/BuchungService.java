@@ -35,6 +35,10 @@ public class BuchungService implements BuchungAnlegenUseCase, BuchungenAbrufenUs
         return buchungsnummer;
     }
 
+    public List<Buchung> alleAbrufen() {
+        return buchungRepository.alleAbrufen();
+    }
+
     @Override
     public List<Buchung> abrufenFuerNutzer(String nutzerId) {
         return buchungRepository.abrufenFuerNutzer(nutzerId).stream()
