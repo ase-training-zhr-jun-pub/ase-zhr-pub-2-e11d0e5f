@@ -29,4 +29,8 @@ public class InMemoryBuchungRepository implements BuchungRepository {
                 .filter(b -> b.raumId().equals(raumId) && b.datum().equals(datum))
                 .toList();
     }
+
+    public void clear() {
+        buchungen.clear();
+    }
 }
