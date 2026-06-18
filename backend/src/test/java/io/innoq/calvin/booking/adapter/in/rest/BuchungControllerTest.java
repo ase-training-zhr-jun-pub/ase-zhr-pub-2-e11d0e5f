@@ -183,6 +183,91 @@ class BuchungControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void buchungAnlegen_mitLeeremTitel_gibt400() throws Exception {
+        mockMvc.perform(post("/api/buchungen")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", basicAuth("alex.berger"))
+                        .content("""
+                                {
+                                  "raumId": "koeln-1-1",
+                                  "datum": "2026-06-17",
+                                  "von": "09:00",
+                                  "bis": "11:00",
+                                  "titel": "   "
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void buchungAnlegen_mitBisVorVon_gibt400() throws Exception {
+        mockMvc.perform(post("/api/buchungen")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", basicAuth("alex.berger"))
+                        .content("""
+                                {
+                                  "raumId": "koeln-1-1",
+                                  "datum": "2026-06-17",
+                                  "von": "11:00",
+                                  "bis": "09:00",
+                                  "titel": "Sprint Planning"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void buchungAnlegen_mitBisGleichVon_gibt400() throws Exception {
+        mockMvc.perform(post("/api/buchungen")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", basicAuth("alex.berger"))
+                        .content("""
+                                {
+                                  "raumId": "koeln-1-1",
+                                  "datum": "2026-06-17",
+                                  "von": "09:00",
+                                  "bis": "09:00",
+                                  "titel": "Sprint Planning"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void buchungAnlegen_mitUngueltigemZeitformat_gibt400() throws Exception {
+        mockMvc.perform(post("/api/buchungen")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", basicAuth("alex.berger"))
+                        .content("""
+                                {
+                                  "raumId": "koeln-1-1",
+                                  "datum": "2026-06-17",
+                                  "von": "0900",
+                                  "bis": "11:00",
+                                  "titel": "Sprint Planning"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void buchungAnlegen_mitUngueltigemDatumsformat_gibt400() throws Exception {
+        mockMvc.perform(post("/api/buchungen")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", basicAuth("alex.berger"))
+                        .content("""
+                                {
+                                  "raumId": "koeln-1-1",
+                                  "datum": "17.06.2026",
+                                  "von": "09:00",
+                                  "bis": "11:00",
+                                  "titel": "Sprint Planning"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
     private static String basicAuth(String nutzerId) {
         return "Basic " + Base64.getEncoder().encodeToString((nutzerId + ":").getBytes());
     }
