@@ -56,9 +56,15 @@ public class BuchungController {
         // Basic-Auth ohne Passwort: "Basic <base64(nutzerId:)>"
         try {
             String decoded = new String(Base64.getDecoder().decode(
-                    authHeader.replace("Basic ", "")));
-            return decoded.split(":")[0];
-        } catch (IllegalArgumentException e) {
+                    authHeader.substring("Basic ".length())));
+            String nutzerId = decoded.split(":", 2)[0];
+            if (nutzerId.isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "NutzerId fehlt im Authorization-Header");
+            }
+            return nutzerId;
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ungültiger Authorization-Header");
         }
     }
