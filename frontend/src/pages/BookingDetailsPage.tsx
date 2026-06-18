@@ -56,14 +56,18 @@ export function BookingDetailsPage() {
         },
         AKTUELLER_NUTZER.nutzerId,
       )
-      const buchungsParams = new URLSearchParams({
-        raum: raum!.id,
-        buchungsnummer: result.buchungsnummer,
-        titel,
-        ...kriterien,
+      navigate("/buchungsbestaetigung", {
+        state: {
+          buchungsnummer: result.buchungsnummer,
+          raumId: raum!.id,
+          titel,
+          notiz: notiz || undefined,
+          datum: kriterien.datum,
+          von: kriterien.von,
+          bis: kriterien.bis,
+          standort: kriterien.standort,
+        },
       })
-      if (notiz) buchungsParams.set("notiz", notiz)
-      navigate(`/buchungsbestaetigung?${buchungsParams.toString()}`)
     } catch {
       setFehler("Buchung konnte nicht gespeichert werden.")
     } finally {

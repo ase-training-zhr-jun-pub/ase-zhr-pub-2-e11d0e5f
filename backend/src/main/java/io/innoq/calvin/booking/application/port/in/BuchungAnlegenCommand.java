@@ -8,6 +8,6 @@ public record BuchungAnlegenCommand(
         String von,
         String bis,
         String titel,
-        String nutzerId,
-        @Nullable String notiz) {
+        @Nullable String notiz,
+        String nutzerId) {
 }
