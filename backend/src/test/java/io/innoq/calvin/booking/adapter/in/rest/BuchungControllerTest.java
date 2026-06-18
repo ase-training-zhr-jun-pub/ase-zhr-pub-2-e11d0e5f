@@ -70,7 +70,7 @@ class BuchungControllerTest {
     @Test
     void buchungenAbrufen_gibtNurBuchungenDesNutzersZurueck() throws Exception {
         given(buchungenAbrufenUseCase.abrufenFuerNutzer("alex.berger")).willReturn(List.of(
-                new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger")
+                new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger", null)
         ));
         given(buchungenAbrufenUseCase.abrufenFuerNutzer("andere.person")).willReturn(List.of());
 
@@ -100,6 +100,41 @@ class BuchungControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void buchungAnlegen_mitNotiz_gibtBuchungsnummerZurueck() throws Exception {
+        given(buchungAnlegenUseCase.buchen(any(BuchungAnlegenCommand.class)))
+                .willReturn("BUC-002");
+
+        mockMvc.perform(post("/api/buchungen")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", basicAuth("alex.berger"))
+                        .content("""
+                                {
+                                  "raumId": "koeln-1-1",
+                                  "datum": "2026-06-17",
+                                  "von": "09:00",
+                                  "bis": "11:00",
+                                  "titel": "Sprint Planning",
+                                  "notiz": "Bitte Laptop mitbringen"
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.buchungsnummer").value("BUC-002"));
+    }
+
+    @Test
+    void buchungenAbrufen_gibtNotizZurueck() throws Exception {
+        given(buchungenAbrufenUseCase.abrufenFuerNutzer("alex.berger")).willReturn(List.of(
+                new Buchung("BUC-001", "koeln-1-1", "2026-06-17", "09:00", "11:00", "Sprint Planning", "alex.berger", "Bitte Laptop mitbringen")
+        ));
+
+        mockMvc.perform(get("/api/buchungen")
+                        .header("Authorization", basicAuth("alex.berger")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].buchungsnummer").value("BUC-001"))
+                .andExpect(jsonPath("$[0].notiz").value("Bitte Laptop mitbringen"));
     }
 
     private static String basicAuth(String nutzerId) {

@@ -6,6 +6,7 @@ import io.innoq.calvin.booking.application.port.in.BuchungenAbrufenUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ public class BuchungController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BuchungResponse buchen(
-            @RequestBody BuchungRequest request,
+            @Valid @RequestBody BuchungRequest request,
             @RequestHeader("Authorization") String authHeader) {
 
         String nutzerId = extractNutzerId(authHeader);
