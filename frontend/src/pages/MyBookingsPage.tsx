@@ -9,8 +9,7 @@ import { cn } from "@/lib/utils"
 import { RAEUME, AKTUELLER_NUTZER, type Buchung, type Standort } from "@/lib/mock-data"
 import { buchungenAbrufen } from "@/lib/api"
 
-// Referenz-"heute" (gemockt), passend zu den Mock-Buchungen.
-const HEUTE = "2026-06-18"
+const HEUTE = new Date().toISOString().split("T")[0]
 
 const WOCHENTAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 const MONATE = [
@@ -152,7 +151,7 @@ export function MyBookingsPage() {
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
             <p className="text-muted-foreground">
-              Sie haben noch keine Konferenzräume gebucht.
+              Sie haben noch keine Raumbuchungen.
             </p>
             <LinkButton to="/">Raum buchen</LinkButton>
           </CardContent>
@@ -241,20 +240,21 @@ export function MyBookingsPage() {
         {meineBuchungen.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
-              Sie haben noch keine Buchungen.
+              Sie haben noch keine Raumbuchungen.
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-2">
             {[...meineBuchungen]
               .sort((a, b) =>
-                (a.datum + a.von).localeCompare(b.datum + b.von),
+                new Date(`${a.datum}T${a.von}`).getTime() - new Date(`${b.datum}T${b.von}`).getTime(),
               )
               .map((b) => {
                 const vergangen = b.datum < HEUTE
                 return (
                   <Card
                     key={b.id}
+                    title={`${b.titel} · ${b.raumName} · ${b.standort} · ${b.von}–${b.bis} Uhr`}
                     className={cn(
                       "cursor-pointer transition-colors hover:bg-muted/50",
                       vergangen && "opacity-60",
