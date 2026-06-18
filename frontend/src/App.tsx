@@ -7,6 +7,7 @@ import { RoomDetailPage } from "@/pages/RoomDetailPage"
 import { BookingDetailsPage } from "@/pages/BookingDetailsPage"
 import { BookingConfirmationPage } from "@/pages/BookingConfirmationPage"
 import { MyBookingsPage } from "@/pages/MyBookingsPage"
+import { BookingViewPage } from "@/pages/BookingViewPage"
 
 const router = createBrowserRouter(
   [
@@ -19,14 +20,13 @@ const router = createBrowserRouter(
         { path: "/buchen/:id/details", element: <BookingDetailsPage /> },
         { path: "/buchungsbestaetigung", element: <BookingConfirmationPage /> },
         { path: "/meine-buchungen", element: <MyBookingsPage /> },
+        { path: "/buchungsdetails/:buchungsnummer", element: <BookingViewPage /> },
       ],
     },
   ],
   { basename: import.meta.env.BASE_URL.replace(/\/$/, "") },
 )
 
-function App() {
+export default function App() {
   return <RouterProvider router={router} />
 }
-
-export default App

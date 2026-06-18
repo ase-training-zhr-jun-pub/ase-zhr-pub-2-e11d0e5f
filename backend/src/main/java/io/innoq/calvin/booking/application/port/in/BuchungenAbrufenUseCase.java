@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface BuchungenAbrufenUseCase {
 
-    List<Buchung> alleAbrufen();
+    List<Buchung> abrufenFuerNutzer(String nutzerId);
 }

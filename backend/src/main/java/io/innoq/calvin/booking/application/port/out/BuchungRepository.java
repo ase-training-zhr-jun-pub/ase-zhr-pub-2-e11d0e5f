@@ -8,5 +8,7 @@ public interface BuchungRepository {
 
     void speichern(Buchung buchung);
 
-    List<Buchung> alleAbrufen();
+    List<Buchung> abrufenFuerNutzer(String nutzerId);
+
+    List<Buchung> findeNachRaumUndDatum(String raumId, String datum);
 }
